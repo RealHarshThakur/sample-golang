@@ -1,5 +1,5 @@
 #!/bin/bash
-for (( c=1; c<=500; c++ ))
+for (( c=1; c<=5000; c++ ))
 do  
    echo "Welcome $c times"
 done
