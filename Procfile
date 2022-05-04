@@ -1,2 +1,3 @@
 web: bin/sample-golang
-worker: bin/sample-golang --worker
+worker: bin/worker
+release: bin/release
