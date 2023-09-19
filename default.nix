@@ -4,13 +4,12 @@
   buildGoModule,
   go_1_20,
   ... 
-}: buildGoModule rec {
-  pname = "my-go-project";
-  version = "0.1.0";
+}: buildGoModule rec{
+  name = "my-go-project";
 
   src = ./.;  # Update the source directory path
 
-  vendorHash = lib.fakeSha256;
+  vendorSha256 = "sha256-pQpattmS9VmO3ZIQUFn66az8GSmB4IvYhTTCFn6SUmo=";
 
   meta = with lib; {
     description = "My Go Project";
