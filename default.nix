@@ -2,14 +2,13 @@
   lib,
   stdenv,
   buildGoModule,
-  go_1_20,
   ... 
-}: buildGoModule rec{
+}: buildGoModule {
   name = "my-go-project";
 
-  src = ./.;  # Update the source directory path
+  src = ./.;  
 
-  vendorSha256 = "sha256-pQpattmS9VmO3ZIQUFn66az8GSmB4IvYhTTCFn6SUmo=";
+  vendorSha256 = "sha256-0ckBvOAREWI3o+dWBPx957v8AiauKb449kuaGV5CoNg=";
 
   meta = with lib; {
     description = "My Go Project";
