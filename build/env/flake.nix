@@ -14,11 +14,9 @@
   system = "aarch64-darwin";
   pkgs = import nixpkgs { inherit system; }; 
   in {
-    packages.${system} = {
-      mypackage = pkgs.callPackage ./default.nix {
-       go_1_20 = pkgs.go_1_20;
+      packages.${system}.default = pkgs.buildEnv {
+        name = "my-env";
+        paths = with pkgs; [ curl go_1_20 ];
       };
-      default = self.packages.${system}.mypackage;
-    }; 
   };
 }
