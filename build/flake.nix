@@ -3,7 +3,7 @@
   
   inputs = {
     nixpkgs = {
-      url = "github:nixos/nixpkgs?ref=nixos-23.11";
+      url = "github:nixos/nixpkgs?ref=nixos-unstable";
     };
   };
 
@@ -11,12 +11,12 @@
   self, 
   nixpkgs,
   }: let
-  system = "aarch64-darwin";
+  system = "aarch64-linux";
   pkgs = import nixpkgs { inherit system; }; 
   in {
     packages.${system} = {
       mypackage = pkgs.callPackage ./default.nix {
-       go_1_20 = pkgs.go_1_20;
+       go_1_21 = pkgs.go_1_21;
       };
       default = self.packages.${system}.mypackage;
     }; 

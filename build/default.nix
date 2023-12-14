@@ -8,7 +8,7 @@
 
   src = ../.;  
 
-  vendorHash = "sha256-0ckBvOAREWI3o+dWBPx957v8AiauKb449kuaGV5CoNg=";
+  vendorHash = "sha256-SAX9JXXAsCr3nkXa7ANduG55Rlqh9XIlkdS644GIj9s=";
 
   meta = with lib; {
     description = "My Go Project";
