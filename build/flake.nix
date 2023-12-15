@@ -19,6 +19,20 @@
        go_1_21 = pkgs.go_1_21;
       };
       default = self.packages.${system}.mypackage;
+
+      devShells = pkgs.mkShell {
+         packages = with pkgs; [
+            go_1_19 # Go 1.19
+            gotools # Go tools like goimports, godoc, and others
+            redis
+          ];
+      };
+
+      runtimeEnv = pkgs.buildEnv {
+        name = "my-env";
+        paths = with pkgs; [ bash curl  ];
+      };
+
     }; 
   };
 }
