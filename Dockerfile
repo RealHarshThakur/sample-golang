@@ -15,7 +15,7 @@ RUN nix \
 RUN nix \
     --extra-experimental-features "nix-command flakes" \
     --option filter-syscalls false \
-    build .#runtimeEnv -o runtimeEnv
+    build .#runtimeEnvs.aarch64-linux.runtime -o runtimeEnv
 
 # Copy the Nix store closure into a directory. The Nix store closure is the
 # entire set of Nix store values that we need for our build and custom environment.
