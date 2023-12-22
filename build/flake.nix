@@ -2,35 +2,40 @@
   description = "A very basic flake";
   
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/a9bf124c46ef298113270b1f84a164865987a91c";
+    nixpkgs-a89.url = "github:nixos/nixpkgs/a89ba043dda559ebc57fc6f1fa8cf3a0b207f688";
   };
 
-  outputs = { self, nixpkgs }: let
+  outputs = { self, nixpkgs, nixpkgs-a89 }: let
     supportedSystems = [ "x86_64-linux" "aarch64-darwin" "x86_64-darwin" "aarch64-linux" ];
     forEachSupportedSystem = f: nixpkgs.lib.genAttrs supportedSystems (system: f {
       pkgs = import nixpkgs { inherit system; };
+      nixpkgs-a89-pkgs = import nixpkgs-a89 { inherit system; };
     });
+
   in {
-    packages = forEachSupportedSystem ({ pkgs }: {
+    packages = forEachSupportedSystem ({ pkgs, nixpkgs-a89-pkgs }: {
       default = pkgs.callPackage ./default.nix {
-        go_1_21 = pkgs.go_1_21;
+        go = pkgs.go;
       };
     });
 
-    devShells = forEachSupportedSystem ({ pkgs }: {
+    devShells = forEachSupportedSystem ({ pkgs, nixpkgs-a89-pkgs }: {
       devShell = pkgs.mkShell {
         # The Nix packages provided in the environment
-        packages = with pkgs; [
-          go_1_19 # Go 1.19
-          gotools # Go tools like goimports, godoc, and others
+        packages =  [
+          nixpkgs-a89-pkgs.go_1_20 
+          pkgs.gotools
         ];
       };
     });
 
-    runtimeEnvs = forEachSupportedSystem ({ pkgs }: {
+    runtimeEnvs = forEachSupportedSystem ({ pkgs, nixpkgs-a89-pkgs }: {
       runtime = pkgs.buildEnv {
         name = "runtimeenv";
-        paths = with pkgs; [ bash curl ];
+        paths =  [ pkgs.bash
+         pkgs.curl 
+        ];
       };
     });
   };
