@@ -1,10 +1,10 @@
 {
   lib,
   stdenv,
-  buildGoModule,
+  buildGo121Module,
   ... 
-}: buildGoModule {
-  name = "my-go-project";
+}: buildGo121Module {
+  name = "github.com/digitalocean/sample-golang";
 
   src = ../.;  
 

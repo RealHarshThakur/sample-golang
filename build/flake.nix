@@ -2,11 +2,11 @@
   description = "A very basic flake";
   
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/a9bf124c46ef298113270b1f84a164865987a91c";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
     nixpkgs-a89.url = "github:nixos/nixpkgs/a89ba043dda559ebc57fc6f1fa8cf3a0b207f688";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-a89 }: let
+  outputs = { self, nixpkgs, nixpkgs-a89, }: let
     supportedSystems = [ "x86_64-linux" "aarch64-darwin" "x86_64-darwin" "aarch64-linux" ];
     forEachSupportedSystem = f: nixpkgs.lib.genAttrs supportedSystems (system: f {
       pkgs = import nixpkgs { inherit system; };
