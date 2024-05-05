@@ -44,7 +44,7 @@
 
     name = "hello";
       config = {
-      entrypoint = ["${inputs.self.packages.${system}.default}"];
+      entrypoint = ["${inputs.self.packages.${system}.default}/bin/my-go-project"];
       };
 };
    ociImage-as-dir = pkgs.runCommand "image-as-dir" { } "${inputs.self.ociImages.${system}.ociImage.copyTo}/bin/copy-to dir:$out";
