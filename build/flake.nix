@@ -3,34 +3,33 @@
   
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
-    nixpkgs-a89.url = "github:nixos/nixpkgs/a89ba043dda559ebc57fc6f1fa8cf3a0b207f688";
+    nix2container.url = "github:nlewo/nix2container";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-a89, }: let
+  outputs = { self, nixpkgs, nix2container }: let
     supportedSystems = [ "x86_64-linux" "aarch64-darwin" "x86_64-darwin" "aarch64-linux" ];
     forEachSupportedSystem = f: nixpkgs.lib.genAttrs supportedSystems (system: f {
       pkgs = import nixpkgs { inherit system; };
-      nixpkgs-a89-pkgs = import nixpkgs-a89 { inherit system; };
+      nix2containerPkgs = nix2container.packages.${system};
     });
 
   in {
-    packages = forEachSupportedSystem ({ pkgs, nixpkgs-a89-pkgs }: {
+    packages = forEachSupportedSystem ({ pkgs, nix2containerPkgs,   }: {
       default = pkgs.callPackage ./default.nix {
         go = pkgs.go;
       };
     });
 
-    devShells = forEachSupportedSystem ({ pkgs, nixpkgs-a89-pkgs }: {
+    devShells = forEachSupportedSystem ({ pkgs,nix2containerPkgs,   }: {
       devShell = pkgs.mkShell {
         # The Nix packages provided in the environment
         packages =  [
-          nixpkgs-a89-pkgs.go_1_20 
           pkgs.gotools
         ];
       };
     });
 
-    runtimeEnvs = forEachSupportedSystem ({ pkgs, nixpkgs-a89-pkgs }: {
+    runtimeEnvs = forEachSupportedSystem ({ pkgs, nix2containerPkgs,  }: {
       runtime = pkgs.buildEnv {
         name = "runtimeenv";
         paths =  [ pkgs.bash
@@ -38,5 +37,17 @@
         ];
       };
     });
+
+   ociImages = forEachSupportedSystem ({ pkgs,nix2containerPkgs,  nixpkgs-a89-pkgs }: {
+       ociImage =  nix2containerPkgs.nix2container.buildImage {
+
+    name = "hello";
+      config = {
+      entrypoint = ["${pkgs.hello}/bin/hello"];
+      };
+};
+  #  ociImage-as-dir = pkgs.runCommand "image-as-dir" { } "${ociImage.copyTo}/bin/copy-to dir:$out";
+   });
+
   };
 }
