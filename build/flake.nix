@@ -30,22 +30,26 @@
       };
     });
 
-    runtimeEnvs = forEachSupportedSystem ({ pkgs, nix2containerPkgs,...  }: {
-      runtime = pkgs.buildEnv {
-        name = "runtimeenv";
-        paths =  [ pkgs.bash
-         pkgs.curl 
-        ];
-      };
-    });
 
    ociImages = forEachSupportedSystem ({ pkgs, nix2containerPkgs, system ,...}: {
        ociImage =  nix2containerPkgs.nix2container.buildImage {
 
     name = "hello";
       config = {
-      entrypoint = ["${inputs.self.packages.${system}.default}/bin/my-go-project"];
+      # entrypoint = ["${inputs.self.packages.${system}.default}/bin/my-go-project"];
+      cmd = ["${inputs.self.packages.${system}.default}/bin/my-go-project"];
       };
+      copyToRoot = [
+        
+        (pkgs.buildEnv {
+        name = "runtimeenv";
+        paths =  [ pkgs.bash
+        pkgs.coreutils
+         pkgs.curl 
+        ];
+      })
+      ];
+
 };
    ociImage-as-dir = pkgs.runCommand "image-as-dir" { } "${inputs.self.ociImages.${system}.ociImage.copyTo}/bin/copy-to dir:$out";
    });
