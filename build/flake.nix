@@ -39,6 +39,7 @@
       phases = [ "unpackPhase" "installPhase" ];
       installPhase = ''
         mkdir -p $out
+        mkdir -p $out/tmp
         cp -r $src/go.mod $out
         cp -r $src/cmd $out
       '';
@@ -46,6 +47,15 @@
    });
 
 
+   runtimeEnvs = forEachSupportedSystem ({ pkgs, nix2containerPkgs,...  }: {
+      runtime = pkgs.buildEnv {
+        name = "runtimeenv";
+        paths =  [ pkgs.bash
+         pkgs.curl 
+         pkgs.coreutils
+        ];
+      };
+    });
 
    ociImages = forEachSupportedSystem ({ pkgs, nix2containerPkgs, system ,...}: {
 
@@ -57,15 +67,8 @@
       cmd = ["${inputs.self.packages.${system}.default}/bin/my-go-project"];
       };
       copyToRoot = [
-        
-        (pkgs.buildEnv {
-        name = "runtimeenv";
-        paths =  [ pkgs.bash
-        pkgs.coreutils
-        pkgs.curl 
+        inputs.self.runtimeEnvs.${system}.runtime
         inputs.self.configs.${system}.config
-        ];
-      })
       ];
 
 };
