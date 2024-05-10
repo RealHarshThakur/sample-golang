@@ -31,8 +31,25 @@
     });
 
 
+    
+   configs = forEachSupportedSystem({pkgs,...}:{
+      config = pkgs.stdenvNoCC.mkDerivation {
+      name = "copy-config";
+      src = ../.;
+      phases = [ "unpackPhase" "installPhase" ];
+      installPhase = ''
+        mkdir -p $out
+        cp -r $src/go.mod $out
+        cp -r $src/cmd $out
+      '';
+   };
+   });
+
+
+
    ociImages = forEachSupportedSystem ({ pkgs, nix2containerPkgs, system ,...}: {
-       ociImage =  nix2containerPkgs.nix2container.buildImage {
+
+    ociImage =  nix2containerPkgs.nix2container.buildImage {
 
     name = "hello";
       config = {
@@ -45,8 +62,8 @@
         name = "runtimeenv";
         paths =  [ pkgs.bash
         pkgs.coreutils
-         pkgs.curl 
-         ../go.mod
+        pkgs.curl 
+        inputs.self.configs.${system}.config
         ];
       })
       ];
