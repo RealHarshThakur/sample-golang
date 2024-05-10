@@ -46,6 +46,7 @@
         paths =  [ pkgs.bash
         pkgs.coreutils
          pkgs.curl 
+         ../go.mod
         ];
       })
       ];
