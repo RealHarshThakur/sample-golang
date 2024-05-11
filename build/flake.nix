@@ -66,10 +66,17 @@
       # entrypoint = ["${inputs.self.packages.${system}.default}/bin/my-go-project"];
       cmd = ["${inputs.self.packages.${system}.default}/bin/my-go-project"];
       };
-      copyToRoot = [
-        inputs.self.runtimeEnvs.${system}.runtime
-        inputs.self.configs.${system}.config
+     maxLayers = 100;
+     layers = [
+         (nix2containerPkgs.nix2container.buildLayer { 
+            copyToRoot = [
+            inputs.self.runtimeEnvs.${system}.runtime
+            inputs.self.configs.${system}.config
+          ];
+         })
       ];
+
+    
 
 };
    ociImage-as-dir = pkgs.runCommand "image-as-dir" { } "${inputs.self.ociImages.${system}.ociImage.copyTo}/bin/copy-to dir:$out";
